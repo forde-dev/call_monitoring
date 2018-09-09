@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 import pymysql as db
 from datetime import date
 
@@ -9,13 +10,13 @@ def index(request):
     outgoing_result = []
     missed = ''
     all_calls = ''
+    voice_mail = ''
 
     try:
         connection = db.connect('localhost', 'root', 'password', 'call_monitoring')
         cursor = connection.cursor(db.cursors.DictCursor)
 
-
-        cursor.execute("""SELECT * FROM call_incoming ORDER BY time DESC""")
+        cursor.execute("""SELECT * FROM call_incoming ORDER BY call_date DESC, time DESC""")
 
         for row in cursor.fetchall():
             incoming_result.append("""
@@ -25,12 +26,11 @@ def index(request):
                       <td>%s</td>
                       <td>%s</td>
                       <td>%s</td>
-                      <td>%s</td>
                     </tr>
-                    """ % (row['system_id'], row['incoming_num'], row['ext'], row['line'], row['call_date'], row['time']))
+                    """ % (row['incoming_num'], row['ext'], row['line'], row['call_date'], row['time']))
 
 
-        cursor.execute("""SELECT * FROM call_logs ORDER BY time DESC""")
+        cursor.execute("""SELECT * FROM call_logs ORDER BY call_date DESC, time DESC""")
 
         for row in cursor.fetchall():
             log_result.append("""
@@ -42,26 +42,8 @@ def index(request):
                       <td>%s</td>
                       <td>%s</td>
                       <td>%s</td>
-                      <td>%s</td>
                     </tr>
-                    """ % (row['system_id'], row['number'], row['ext'], row['answered'], row['ring'], row['duration'], row['call_date'], row['time']))
-
-
-        cursor.execute("""SELECT * FROM call_outgoing""")
-
-        for row in cursor.fetchall():
-            outgoing_result.append("""
-                    <tr>
-                      <td>%s</td>
-                      <td>%s</td>
-                      <td>%s</td>
-                      <td>%s</td>
-                      <td>%s</td>
-                      <td>%s</td>
-                      <td>%s</td>
-                      <td>%s</td>
-                    </tr>
-                    """ % (row['call_date'], row['time'], row['incoming_num'], row['ext_num'], row['answered'], row['system_id']))
+                    """ % (row['number'], row['ext'], row['answered'], row['ring'], row['duration'], row['call_date'], row['time']))
 
         cursor.execute("""SELECT count(*) FROM call_logs WHERE answered = 'no'""")
 
@@ -77,8 +59,8 @@ def index(request):
 
         cursor.execute("""SELECT count(*) FROM call_incoming WHERE ext = '200'""")
 
-        voice_mail = cursor.fetchone()
-        voice_mail = str(voice_mail['count(*)'])
+        voice_mail_f = cursor.fetchone()
+        voice_mail = str(voice_mail_f['count(*)'])
 
         cursor.close()
         connection.close()
@@ -93,4 +75,94 @@ def index(request):
     return render(request, 'index.html', data)
 
 def missed_calls(request):
-    return render(request, 'missed_calls.html')
+
+
+    log_result = []
+
+    try:
+        connection = db.connect('localhost', 'root', 'password', 'call_monitoring')
+        cursor = connection.cursor(db.cursors.DictCursor)
+
+        cursor.execute("""SELECT * FROM call_logs WHERE answered = 'no' ORDER BY call_date DESC, time DESC""")
+
+        for row in cursor.fetchall():
+            log_result.append("""
+                    <tr>
+                      <td>%s</td>
+                      <td>%s</td>
+                      <td>%s</td>
+                      <td>%s</td>
+                      <td>%s</td>
+                      <td>%s</td>
+                      <td>%s</td>
+                    </tr>
+                    """ % (row['number'], row['ext'], row['answered'], row['ring'], row['duration'], row['call_date'], row['time']))
+
+        cursor.close()
+        connection.close()
+    except db.Error:
+        log_result = '<p>Sorry! We are experiencing problems at the moment. Please call back later.</p>'
+
+
+
+    data = {'logs': log_result}
+
+    return render(request, 'missed_calls.html', data)
+
+
+def ajax_incoming(request):
+    result = []
+    try:
+        connection = db.connect('localhost', 'root', 'password', 'call_monitoring')
+        cursor = connection.cursor(db.cursors.DictCursor)
+
+        cursor.execute("""SELECT * FROM call_incoming ORDER BY call_date DESC, time DESC""")
+
+        for row in cursor.fetchall():
+            result.append([row['incoming_num'], row['ext'], row['line'], row['call_date'], row['time']])
+
+    except db.Error:
+        result = 'Sorry! We are experiencing problems at the moment. Please call back later.'
+
+    data = {
+        "data" : result
+    }
+    return JsonResponse(data)
+
+def ajax_logs(request):
+    result = []
+    try:
+        connection = db.connect('localhost', 'root', 'password', 'call_monitoring')
+        cursor = connection.cursor(db.cursors.DictCursor)
+
+        cursor.execute("""SELECT * FROM call_logs ORDER BY call_date DESC, time DESC""")
+
+        for row in cursor.fetchall():
+            result.append([row['number'], row['ext'], row['answered'], row['ring'], row['duration'], row['call_date'], row['time']])
+
+    except db.Error:
+        result = 'Sorry! We are experiencing problems at the moment. Please call back later.'
+
+    data = {
+        "data" : result
+    }
+    return JsonResponse(data)
+
+def ajax_missed(request):
+    result = []
+    try:
+        connection = db.connect('localhost', 'root', 'password', 'call_monitoring')
+        cursor = connection.cursor(db.cursors.DictCursor)
+
+        cursor.execute("""SELECT * FROM call_logs WHERE answered = 'no' ORDER BY call_date DESC, time DESC""")
+
+        for row in cursor.fetchall():
+            result.append([row['number'], row['ext'], row['answered'], row['ring'], row['duration'], row['call_date'], row['time']])
+
+    except db.Error:
+        result = 'Sorry! We are experiencing problems at the moment. Please call back later.'
+
+    data = {
+        "data" : result
+    }
+    return JsonResponse(data)

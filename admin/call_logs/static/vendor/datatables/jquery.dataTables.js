@@ -9984,7 +9984,7 @@
 		 *      } );
 		 *    } );
 		 */
-		"aaSorting": [[0,'asc']],
+		"aaSorting": [],
 	
 	
 		/**
@@ -13269,7 +13269,7 @@
 		 *  @type array
 		 *  @todo These inner arrays should really be objects
 		 */
-		"aaSorting": null,
+		"aaSorting": [],
 	
 		/**
 		 * Sorting that is always applied to the table (i.e. prefixed in front of
