@@ -5,7 +5,7 @@ $(document).ready(function() {
 
 
 $(document).ready(function() {
-var incomingtable = $('#incomingTable').DataTable({ ajax : '/call_logs/ajax/ajax_incoming' });
+var incomingtable = $('#incomingTable').DataTable({ ajax : 'call_logs/ajax/ajax_incoming' });
 
 setInterval( function () {
     incomingtable.ajax.reload();
@@ -15,7 +15,7 @@ setInterval( function () {
 
 
 $(document).ready(function() {
-var logstable = $('#logsTable').DataTable({ ajax : '/call_logs/ajax/ajax_logs' });
+var logstable = $('#logsTable').DataTable({ ajax : 'call_logs/ajax/ajax_logs' });
 
   setInterval( function () {
     logstable.ajax.reload();
@@ -25,7 +25,7 @@ var logstable = $('#logsTable').DataTable({ ajax : '/call_logs/ajax/ajax_logs' }
 
 
 $(document).ready(function() {
-var missedtable = $('#missedTable').DataTable({ ajax : '/call_logs/ajax/ajax_missed' });
+var missedtable = $('#missedTable').DataTable({ ajax : 'call_logs/ajax/ajax_missed' });
 
   setInterval( function () {
     missedtable.ajax.reload();
