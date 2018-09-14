@@ -47,31 +47,40 @@
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-fw fa-folder"></i>
-            <span>Extra</span>
-          </a>
-          <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-            <h6 class="dropdown-header">Login Screens:</h6>
-            <a class="dropdown-item" href="login.html">Login</a>
-            <a class="dropdown-item" href="register.html">Register</a>
-            <a class="dropdown-item" href="forgot-password.html">Forgot Password</a>
-            <div class="dropdown-divider"></div>
-            <h6 class="dropdown-header">Other Pages:</h6>
-            <a class="dropdown-item" href="404.html">404 Page</a>
-            <a class="dropdown-item" href="blank.html">Blank Page</a>
-          </div>
+        <li class="nav-item active" >
+          <a class="nav-link" href="{% url 'missed_calls' %}">
+            <i class="fas fa-fw fa-exclamation-triangle"></i>
+            <span>Missed Calls</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="charts.html">
+          <a class="nav-link" href="{% url 'callreports' %}">
             <i class="fas fa-fw fa-chart-area"></i>
-            <span>Calls</span></a>
+            <span>Call Reports</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="tables.html">
-            <i class="fas fa-fw fa-table"></i>
+          <a class="nav-link" href="{% url 'outgoing_calls' %}">
+            <i class="fas fa-fw fa-chevron-circle-right"></i>
+            <span>Outgoing Calls</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <i class="fas fa-fw fa-users"></i>
             <span>Groups</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'today_calls' %}">
+            <i class="fas fa-fw fa-list-ul"></i>
+            <span>Calls Today</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'current_calls' %}">
+            <i class="fas fa-fw fa-bell"></i>
+            <span>Current Calls</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'voicemail_calls' %}">
+            <i class="fas fa-fw fa-comments"></i>
+            <span>Voice Mail</span></a>
         </li>
       </ul>
 
@@ -130,7 +139,7 @@
                 </table>
               </div>
             </div>
-            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+
           </div>
 
         </div>
@@ -156,24 +165,6 @@
       <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="login.html">Logout</a>
-          </div>
-        </div>
-      </div>
-    </div>
 
         <!-- Bootstrap core JavaScript-->
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
